@@ -1,8 +1,9 @@
-# life-in-uk-test
-Some study digests and Practice Exams that helped me pass the Life in UK Test (2026). See screenshots below.
-In the study.hmtl, the 3 dots indicate the occurence of this section/topic/fact in the actual exam. 
+# Life in UK Test Prep
+Some study digests and Practice Exams that helped me pass the Life in UK Test (2026). [ See screenshots below](#screen-shots).
 
 ## **Study Dots Legend**
+In the study.hmtl, the 3 dots indicate the occurence of this section/topic/fact in the actual exam. 
+
 - 3 full dots = high occurence . . .
 - 2 full dots = medium occurence . . o
 - 1 full dot = low occurence . o o
