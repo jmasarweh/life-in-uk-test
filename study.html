@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life in the UK — Study Guide</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #faf8f2; }
+  ::-webkit-scrollbar { height: 4px; }
+  ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const NAVY = "#1e3a5f";
+const NAVY_LIGHT = "#2a5080";
+const NAVY_PALE = "#e8eef5";
+const GOLD = "#c9a84c";
+const CREAM = "#faf8f2";
+
+const Dots = ({ count }) => (
+  <span style={{ color: NAVY, fontSize: "10px", letterSpacing: "3px", marginLeft: "8px" }}>
+    {"●".repeat(count)}{"○".repeat(3 - count)}
+  </span>
+);
+
+const Card = ({ title, subtitle, dots, items, cultural, isOpen, onToggle }) => (
+  <div style={{
+    background: "#fff", borderRadius: "10px", marginBottom: "10px",
+    border: `1px solid ${isOpen ? NAVY : "#ddd"}`,
+    boxShadow: isOpen ? "0 2px 12px rgba(30,58,95,0.12)" : "0 1px 3px rgba(0,0,0,0.05)",
+    transition: "all 0.2s ease"
+  }}>
+    <div onClick={onToggle} style={{
+      padding: "14px 18px", cursor: "pointer", display: "flex",
+      alignItems: "center", justifyContent: "space-between",
+      borderBottom: isOpen ? `1px solid ${NAVY_PALE}` : "none"
+    }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "4px" }}>
+          <span style={{ fontWeight: 700, color: NAVY, fontSize: "15px" }}>{title}</span>
+          <Dots count={dots} />
+        </div>
+        {subtitle && <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>{subtitle}</div>}
+      </div>
+      <span style={{ color: NAVY, fontSize: "18px", transform: isOpen ? "rotate(90deg)" : "none", transition: "0.2s" }}>›</span>
+    </div>
+    {isOpen && (
+      <div style={{ padding: "14px 18px" }}>
+        <ul style={{ margin: 0, paddingLeft: "18px", listStyle: "none" }}>
+          {items.map((item, i) => (
+            <li key={i} style={{
+              fontSize: "13.5px", lineHeight: "1.6", marginBottom: "6px",
+              color: "#333", position: "relative", paddingLeft: "12px"
+            }}>
+              <span style={{ position: "absolute", left: 0, color: NAVY }}>•</span>
+              {typeof item === "string" ? <span dangerouslySetInnerHTML={{ __html: item }} /> : item}
+            </li>
+          ))}
+        </ul>
+        {cultural && cultural.length > 0 && (
+          <div style={{ marginTop: "12px", padding: "10px 14px", background: "#fdf6ee", borderRadius: "8px", borderLeft: "3px solid #8b5e3c" }}>
+            <div style={{ fontSize: "11px", fontWeight: 700, color: "#8b5e3c", textTransform: "uppercase", marginBottom: "6px", letterSpacing: "0.5px" }}>
+              📜 Cultural & Literary
+            </div>
+            {cultural.map((c, i) => (
+              <div key={i} style={{ fontSize: "13px", color: "#5a3e1b", marginBottom: "4px", paddingLeft: "10px", position: "relative" }}>
+                <span style={{ position: "absolute", left: 0 }}>–</span>
+                <span dangerouslySetInnerHTML={{ __html: c }} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+);
+
+const SectionHeader = ({ children }) => (
+  <div style={{
+    fontSize: "15px", fontWeight: 700, color: NAVY, textTransform: "uppercase",
+    letterSpacing: "1.5px", padding: "20px 0 10px", borderBottom: `2px solid ${NAVY}`, marginBottom: "14px"
+  }}>{children}</div>
+);
+
+const DATA = {
+  "Pre-Norman Britain": {
+    intro: "From earliest settlements through Roman occupation to the Viking age — foundations of British identity.",
+    sections: [
+      {
+        heading: "Stone Age (c. 4000–2000 BC)",
+        cards: [
+          {
+            title: "Early Settlers", subtitle: "Hunters → Farmers", dots: 2,
+            items: [
+              "Britain was connected to mainland Europe by a <b>land bridge</b> — separated ~10,000 years ago",
+              "First people were <b>hunter-gatherers</b>",
+              "Farming began around <b>6,000 years ago</b> — Neolithic revolution",
+              "People built <b>burial mounds</b> and <b>stone monuments</b>"
+            ],
+            cultural: [
+              "<b>Stonehenge</b> — Wiltshire; built in stages over ~1,500 years; purpose debated (religious temple, astronomical calendar); <b>UNESCO World Heritage Site</b>",
+              "<b>Skara Brae</b> — Orkney, Scotland; best-preserved <b>Stone Age village</b> in northern Europe; UNESCO World Heritage Site"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Bronze Age & Iron Age (c. 2000 BC–AD 43)",
+        cards: [
+          {
+            title: "Bronze & Iron Age Britain", subtitle: "Celts, tribes & hill forts", dots: 2,
+            items: [
+              "<b>Bronze Age</b> — people learned to make tools and weapons from bronze; trade with Europe",
+              "<b>Iron Age</b> — stronger iron tools and weapons; <b>Celtic culture</b> spread across Britain",
+              "Society organised into <b>tribes</b> led by warrior chiefs",
+              "Built <b>hill forts</b> for defence (e.g., Maiden Castle, Dorset)",
+              "Spoke <b>Celtic languages</b> — ancestors of Welsh, Gaelic, Cornish, Irish",
+              "First <b>coins</b> minted in Britain"
+            ],
+            cultural: [
+              "<b>Celtic art</b> — intricate metalwork, jewellery, decorated mirrors and shields"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Roman Britain (AD 43–c. 410)",
+        cards: [
+          {
+            title: "Roman Invasion & Occupation", subtitle: "AD 43–c. 410", dots: 3,
+            items: [
+              "<b>Julius Caesar</b> raided Britain in <b>55 BC</b> — did not stay",
+              "Full invasion under <b>Emperor Claudius in AD 43</b> — Romans conquered most of Britain",
+              "<b>Boudicca</b> (Boudica) — queen of the <b>Iceni tribe</b>; led a major <b>revolt against the Romans (AD 60/61)</b>; burned Colchester, London, St Albans; eventually defeated",
+              "<b>Hadrian's Wall</b> — built <b>AD 122</b> on orders of Emperor Hadrian; marked northern frontier; ran from <b>Solway Firth to Tyne</b> (coast to coast); <b>UNESCO World Heritage Site</b>",
+              "Romans never conquered <b>Scotland</b> (called Caledonia) or <b>Ireland</b>"
+            ]
+          },
+          {
+            title: "Roman Legacy in Britain", subtitle: "What they left behind", dots: 3,
+            items: [
+              "Built <b>roads</b> (many still followed today), <b>towns</b>, <b>public baths</b>, <b>sewers</b>",
+              "Introduced <b>Latin</b> — influenced English language and legal terms",
+              "Major towns: <b>Londinium</b> (London), <b>Aquae Sulis</b> (Bath), <b>Eboracum</b> (York)",
+              "Brought <b>Christianity</b> to Britain in the 3rd–4th century",
+              "Romans left Britain around <b>AD 410</b> — Empire declining, needed troops elsewhere",
+              "After Romans left → <b>power vacuum</b> → Anglo-Saxon invasions"
+            ],
+            cultural: [
+              "<b>Roman Baths at Bath</b> — major tourist site; built around natural hot springs",
+              "<b>Hadrian's Wall</b> — 73-mile fortification; most important Roman monument in Britain"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Anglo-Saxon Arrival & Vikings",
+        cards: [
+          {
+            title: "Anglo-Saxon Invasions", subtitle: "c. 410–800s", dots: 2,
+            items: [
+              "After Romans left, <b>Angles, Saxons and Jutes</b> invaded from northern Europe (modern Germany/Denmark)",
+              "Established several <b>kingdoms</b>: Wessex, Mercia, Northumbria, East Anglia, Essex, Sussex, Kent",
+              "The word '<b>England</b>' comes from '<b>land of the Angles</b>'",
+              "Brought their <b>language</b> — Old English (basis of modern English)",
+              "Initially <b>pagan</b>; gradually converted to <b>Christianity</b>",
+              "<b>St Augustine</b> — sent by the Pope in <b>AD 597</b>; became first <b>Archbishop of Canterbury</b>; converted King Æthelberht of Kent"
+            ],
+            cultural: [
+              "<b>Sutton Hoo</b> — Anglo-Saxon ship burial in Suffolk; treasure discovered 1939; reveals wealth and craftsmanship of Anglo-Saxon kings",
+              "<b>Lindisfarne Gospels (c. 700)</b> — illuminated manuscript; masterpiece of Anglo-Saxon art",
+              "<b>Beowulf</b> — oldest surviving <b>English epic poem</b>; written in Old English; hero fights monster Grendel"
+            ]
+          },
+          {
+            title: "The Vikings", subtitle: "c. 789–1066", dots: 2,
+            items: [
+              "<b>Vikings</b> from Denmark and Norway raided and then <b>settled</b> in Britain from the late 700s",
+              "First major attack: <b>Lindisfarne monastery (793)</b> — shocked Christian Europe",
+              "Conquered much of eastern/northern England — established the <b>Danelaw</b>",
+              "<b>Alfred the Great</b> (Wessex) resisted the Vikings and agreed boundaries",
+              "Eventually <b>Viking and Anglo-Saxon cultures merged</b>",
+              "<b>Cnut (Canute)</b> — Danish king who ruled <b>England, Denmark, and Norway</b> (1016–1035)",
+              "Viking influence ended with the <b>Norman Conquest (1066)</b>"
+            ],
+            cultural: [
+              "Viking place names across England: endings in <b>-by</b> (Whitby), <b>-thorpe</b> (Cleethorpes), <b>-thwaite</b> (Braithwaite)"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Anglo-Saxon & Norman": {
+    intro: "Early England — formation of a unified kingdom and the Norman Conquest.",
+    sections: [
+      {
+        heading: "Anglo-Saxon Period",
+        cards: [
+          {
+            title: "Alfred the Great", subtitle: "871–899", dots: 2,
+            items: [
+              "King of Wessex — <b>first effective King of England</b>",
+              "United Anglo-Saxon kingdoms against <b>Viking invasions</b>",
+              "Promoted <b>education and literacy</b> — translated Latin texts into English",
+              "Built a <b>network of fortified towns</b> (burhs)",
+              "Established the <b>Anglo-Saxon Chronicle</b>"
+            ],
+            cultural: [
+              "<b>Anglo-Saxon Chronicle</b> — first continuous history of England in English"
+            ]
+          },
+          {
+            title: "Æthelstan", subtitle: "924–939", dots: 1,
+            items: [
+              "First true <b>King of all England</b> (grandson of Alfred)",
+              "Victory at <b>Battle of Brunanburh (937)</b> — united England"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "The Norman Conquest",
+        cards: [
+          {
+            title: "Harold II", subtitle: "Jan–Oct 1066", dots: 2,
+            items: [
+              "Last <b>Anglo-Saxon king</b>",
+              "Won <b>Battle of Stamford Bridge</b> vs Norwegian invasion (Sept 1066)",
+              "Killed at <b>Battle of Hastings</b> — <b>14 October 1066</b>"
+            ]
+          },
+          {
+            title: "William I (the Conqueror)", subtitle: "1066–1087", dots: 3,
+            items: [
+              "<b>Duke of Normandy</b> — claimed English throne, defeated Harold II",
+              "<b>Battle of Hastings, 14 Oct 1066</b> — most important date in English history",
+              "Introduced the <b>feudal system</b> — land in exchange for military service",
+              "Commissioned the <b>Domesday Book (1086)</b> — survey of all land/property in England",
+              "Built the <b>Tower of London</b> (White Tower)",
+              "Replaced Anglo-Saxon nobles with <b>Norman French-speaking lords</b>",
+              "Introduced <b>Norman French</b> as the language of court and law"
+            ],
+            cultural: [
+              "<b>Domesday Book (1086)</b> — first comprehensive survey of England; used for taxation",
+              "<b>Bayeux Tapestry</b> — 70m embroidered cloth depicting the Norman Conquest and Battle of Hastings; likely commissioned by Bishop Odo"
+            ]
+          },
+          {
+            title: "William II (Rufus)", subtitle: "1087–1100", dots: 1,
+            items: [
+              "William I's son — killed in a <b>hunting accident</b> in the New Forest",
+              "Completed <b>Westminster Hall</b>"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Medieval": {
+    intro: "Magna Carta, the Crusades, Black Death, and the Wars of the Roses.",
+    sections: [
+      {
+        heading: "Plantagenet Kings",
+        cards: [
+          {
+            title: "Henry I", subtitle: "1100–1135", dots: 1,
+            items: [
+              "William I's youngest son — established <b>Charter of Liberties</b>",
+              "Improved <b>royal justice system</b>"
+            ]
+          },
+          {
+            title: "Stephen", subtitle: "1135–1154", dots: 1,
+            items: [
+              "Period of civil war known as <b>The Anarchy</b> — fought Matilda (Henry I's daughter) for the throne"
+            ]
+          },
+          {
+            title: "Henry II", subtitle: "1154–1189", dots: 2,
+            items: [
+              "First <b>Plantagenet king</b> — ruled England and large parts of France",
+              "Established <b>common law</b> and <b>trial by jury</b>",
+              "Conflict with <b>Thomas Becket</b> (Archbishop of Canterbury) over church vs state power",
+              "Becket <b>murdered in Canterbury Cathedral (1170)</b> — became a martyr and saint"
+            ],
+            cultural: [
+              "<b>Canterbury Cathedral</b> became major <b>pilgrimage site</b> after Becket's murder"
+            ]
+          },
+          {
+            title: "Richard I (the Lionheart)", subtitle: "1189–1199", dots: 2,
+            items: [
+              "Spent most of his reign <b>fighting in the Crusades</b> (Third Crusade)",
+              "Barely spent time in England — <b>absent king</b>",
+              "Known for his <b>military reputation</b>, not governance"
+            ]
+          },
+          {
+            title: "King John", subtitle: "1199–1216", dots: 3,
+            items: [
+              "Considered a <b>weak and unpopular king</b>",
+              "Lost most <b>English lands in France</b>",
+              "Forced by barons to sign the <b>Magna Carta — 15 June 1215</b>",
+              "Magna Carta established: <b>no one is above the law</b>, even the king",
+              "Right to a <b>fair trial</b> — foundation of constitutional government"
+            ],
+            cultural: [
+              "<b>Magna Carta (1215)</b> — 'Great Charter'; foundation of <b>rule of law, human rights, constitutional governance</b>; influenced US Constitution and UN Declaration of Human Rights"
+            ]
+          },
+          {
+            title: "Edward I", subtitle: "1272–1307", dots: 2,
+            items: [
+              "<b>Conquered Wales</b> — built ring of castles (Caernarfon, Conwy, Harlech)",
+              "Named his son first <b>Prince of Wales</b> (title still used)",
+              "Called the <b>Model Parliament (1295)</b> — included commoners for the first time",
+              "Attempted to conquer <b>Scotland</b> — 'Hammer of the Scots'"
+            ]
+          },
+          {
+            title: "Edward III", subtitle: "1327–1377", dots: 2,
+            items: [
+              "Started the <b>Hundred Years' War</b> with France (1337–1453)",
+              "English victories at <b>Crécy (1346)</b> and <b>Poitiers (1356)</b>",
+              "<b>Black Death (1348)</b> — killed <b>one-third</b> of England's population",
+              "Led to <b>labour shortages</b> → peasants gained more power"
+            ]
+          },
+          {
+            title: "Richard II", subtitle: "1377–1399", dots: 1,
+            items: [
+              "Faced the <b>Peasants' Revolt (1381)</b> — led by Wat Tyler",
+              "Revolt over <b>poll tax</b> — suppressed but showed growing common people's power",
+              "Deposed by Henry Bolingbroke (Henry IV)"
+            ]
+          },
+          {
+            title: "Henry V", subtitle: "1413–1422", dots: 2,
+            items: [
+              "Famous victory at <b>Battle of Agincourt (1415)</b> — against France in Hundred Years' War",
+              "Used <b>English longbowmen</b> to defeat larger French army",
+              "Treaty of Troyes made him <b>heir to French throne</b> — but died young"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Wars of the Roses (1455–1485)",
+        cards: [
+          {
+            title: "Henry VI", subtitle: "1422–1461, 1470–1471", dots: 2,
+            items: [
+              "<b>House of Lancaster</b> (red rose) — weak king, suffered mental illness",
+              "Lost the <b>Hundred Years' War</b> — England lost all French territories except Calais",
+              "Wars of the Roses began — <b>Lancaster (red) vs York (white)</b>"
+            ]
+          },
+          {
+            title: "Edward IV", subtitle: "1461–1483", dots: 1,
+            items: [
+              "<b>House of York</b> — seized throne from Henry VI",
+              "Restored relative stability"
+            ]
+          },
+          {
+            title: "Richard III", subtitle: "1483–1485", dots: 2,
+            items: [
+              "Last <b>York king</b> and last English king to <b>die in battle</b>",
+              "Defeated at <b>Battle of Bosworth Field (1485)</b> by Henry Tudor",
+              "Remains found under a <b>Leicester car park</b> in 2012"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Medieval Cultural Works",
+        cards: [
+          {
+            title: "Literature & Culture of the Period", subtitle: "Key works to know", dots: 3,
+            items: [],
+            cultural: [
+              "<b>Geoffrey Chaucer — The Canterbury Tales (c.1387)</b> — collection of stories told by pilgrims travelling to Canterbury; written in <b>Middle English</b> (not Latin); Chaucer is the 'Father of English Literature'",
+              "<b>English language evolved</b>: Old English → Middle English (French-influenced after Norman Conquest)",
+              "<b>Mystery and Miracle plays</b> — religious dramas performed in towns",
+              "<b>Decorated Gothic architecture</b> — great cathedrals built (York Minster, Salisbury, etc.)"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Tudors": {
+    intro: "Break with Rome, the English Reformation, and the Golden Age. Heavily tested.",
+    sections: [
+      {
+        heading: "Tudor Monarchs",
+        cards: [
+          {
+            title: "Henry VII", subtitle: "1485–1509", dots: 2,
+            items: [
+              "Won <b>Battle of Bosworth Field (1485)</b> — ended Wars of the Roses",
+              "First <b>Tudor monarch</b> — united Lancaster and York by marrying Elizabeth of York",
+              "Brought <b>stability and financial prudence</b> after decades of civil war"
+            ]
+          },
+          {
+            title: "Henry VIII", subtitle: "1509–1547", dots: 3,
+            items: [
+              "<b>Six wives</b>: Catherine of Aragon (divorced), Anne Boleyn (beheaded), Jane Seymour (died), Anne of Cleves (divorced), Catherine Howard (beheaded), Catherine Parr (survived)",
+              "Memory aid: <b>Divorced, Beheaded, Died, Divorced, Beheaded, Survived</b>",
+              "Broke with <b>Rome</b> because Pope refused to annul his marriage to Catherine of Aragon",
+              "Established the <b>Church of England (1534)</b> — himself as Supreme Head",
+              "<b>Act of Supremacy (1534)</b> — made monarch head of the Church",
+              "<b>Dissolution of the Monasteries (1536–1541)</b> — seized Catholic Church lands/wealth",
+              "Wales formally united with England: <b>Laws in Wales Acts (1535–1542)</b>",
+              "Strengthened the <b>Royal Navy</b>"
+            ],
+            cultural: [
+              "<b>Hampton Court Palace</b> — major Tudor royal residence",
+              "<b>Book of Common Prayer</b> — first published under his son Edward VI but roots in Henry's Reformation"
+            ]
+          },
+          {
+            title: "Edward VI", subtitle: "1547–1553", dots: 1,
+            items: [
+              "Henry VIII's son (by Jane Seymour) — became king aged <b>9</b>",
+              "Strongly <b>Protestant</b> — introduced <b>Book of Common Prayer</b>",
+              "Died aged <b>15</b> — England swung Protestant during his reign"
+            ]
+          },
+          {
+            title: "Mary I (Bloody Mary)", subtitle: "1553–1558", dots: 2,
+            items: [
+              "Henry VIII's daughter (by Catherine of Aragon)",
+              "Restored <b>Catholicism</b> — reversed Edward VI's Protestant reforms",
+              "Earned nickname <b>'Bloody Mary'</b> — burned <b>~300 Protestants</b> at the stake",
+              "Married <b>Philip II of Spain</b> — unpopular alliance"
+            ]
+          },
+          {
+            title: "Elizabeth I", subtitle: "1558–1603", dots: 3,
+            items: [
+              "Henry VIII's daughter (by Anne Boleyn) — the '<b>Virgin Queen</b>' — never married",
+              "Re-established the <b>Church of England</b> (Protestant) — found a <b>middle way</b>",
+              "<b>Elizabethan Religious Settlement</b> — compromise between Catholic and Protestant",
+              "Defeated the <b>Spanish Armada (1588)</b> — major naval victory, established England as sea power",
+              "Period known as the <b>Elizabethan Golden Age</b>",
+              "<b>Elizabethan era</b> = flourishing of arts, exploration, culture",
+              "First <b>English colonies</b> in the Americas (Roanoke)",
+              "Signed the <b>execution of Mary, Queen of Scots (1587)</b> — Catholic rival"
+            ],
+            cultural: [
+              "<b>William Shakespeare (1564–1616)</b> — born Stratford-upon-Avon; wrote during Elizabeth I and James I's reigns",
+              "Notable works: <b>Hamlet, Othello, Macbeth, Romeo and Juliet, A Midsummer Night's Dream, The Tempest</b>",
+              "Built the <b>Globe Theatre</b> (1599) — reconstructed in modern London",
+              "<b>Christopher Marlowe</b> — playwright contemporary of Shakespeare (<i>Doctor Faustus</i>)",
+              "<b>Edmund Spenser</b> — <i>The Faerie Queene</i>, dedicated to Elizabeth I",
+              "Era of <b>sonnets</b> — Shakespeare wrote 154 sonnets"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Stuarts": {
+    intro: "Civil War, Republic, Restoration, Glorious Revolution, and the Acts of Union.",
+    sections: [
+      {
+        heading: "Early Stuarts & Civil War",
+        cards: [
+          {
+            title: "James I (James VI of Scotland)", subtitle: "1603–1625", dots: 3,
+            items: [
+              "First king to rule <b>both England and Scotland</b> — 'Union of the Crowns' (1603)",
+              "<b>Gunpowder Plot (5 Nov 1605)</b> — Guy Fawkes and Catholic conspirators tried to blow up Parliament",
+              "Still celebrated as <b>Bonfire Night / Guy Fawkes Night</b>",
+              "Commissioned the <b>King James Bible (1611)</b>",
+              "Believed in the <b>Divine Right of Kings</b> — clashed with Parliament"
+            ],
+            cultural: [
+              "<b>King James Bible (1611)</b> — most influential English translation of the Bible; shaped the English language",
+              "<b>Shakespeare</b> continued writing under James I (Macbeth written to please James)",
+              "<b>Inigo Jones</b> — introduced classical architecture to England (Banqueting House, Whitehall)"
+            ]
+          },
+          {
+            title: "Charles I", subtitle: "1625–1649", dots: 3,
+            items: [
+              "Believed in <b>Divine Right of Kings</b> — ruled without Parliament for <b>11 years</b> (1629–1640)",
+              "Tried to impose <b>Anglican prayer book on Scotland</b> → rebellion",
+              "<b>English Civil War (1642–1651)</b> — Royalists (Cavaliers) vs Parliamentarians (Roundheads)",
+              "Parliament led by <b>Oliver Cromwell</b>",
+              "Charles I <b>defeated, tried for treason, and executed (30 Jan 1649)</b>",
+              "Only English king to be <b>publicly executed</b>"
+            ]
+          },
+          {
+            title: "Oliver Cromwell (Lord Protector)", subtitle: "1649–1658", dots: 3,
+            items: [
+              "<b>Not a king</b> — ruled as <b>Lord Protector</b> of the Commonwealth",
+              "England became a <b>republic</b> — only time in history",
+              "Cromwell was a <b>Puritan</b> — banned Christmas, theatre, and many entertainments",
+              "Brutal conquest of <b>Ireland</b> — still controversial",
+              "Promoted <b>religious tolerance for Protestants</b> (not Catholics)",
+              "After his death, his son Richard briefly succeeded — failed quickly"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Restoration & Glorious Revolution",
+        cards: [
+          {
+            title: "Charles II", subtitle: "1660–1685", dots: 2,
+            items: [
+              "Invited back from exile — <b>Restoration of the monarchy (1660)</b>",
+              "<b>Great Plague (1665)</b> and <b>Great Fire of London (1666)</b> during his reign",
+              "Reopened <b>theatres</b> — first time women acted on stage",
+              "Founded the <b>Royal Society</b> for science",
+              "Known as the '<b>Merry Monarch</b>'"
+            ],
+            cultural: [
+              "<b>Samuel Pepys' Diary</b> — vivid eyewitness account of the Plague and Great Fire",
+              "<b>John Milton — Paradise Lost (1667)</b> — epic poem; one of greatest works in English",
+              "<b>Isaac Newton</b> — Principia Mathematica (1687); laws of motion/gravity",
+              "<b>Christopher Wren</b> — rebuilt <b>St Paul's Cathedral</b> after the Great Fire"
+            ]
+          },
+          {
+            title: "James II", subtitle: "1685–1688", dots: 2,
+            items: [
+              "Catholic king — tried to <b>restore Catholicism</b>",
+              "Deeply unpopular with Protestant Parliament",
+              "<b>Fled to France</b> when William of Orange invaded"
+            ]
+          },
+          {
+            title: "William III & Mary II", subtitle: "1689–1702 / 1689–1694", dots: 3,
+            items: [
+              "<b>Glorious Revolution (1688)</b> — bloodless transfer of power",
+              "Invited by Parliament to replace Catholic James II",
+              "Signed the <b>Bill of Rights (1689)</b> — key constitutional document",
+              "Bill of Rights established: <b>Parliament's supremacy over the monarch</b>",
+              "Free elections, no taxation without Parliament's consent, right to petition",
+              "Established <b>constitutional monarchy</b> — monarch rules with Parliament",
+              "<b>Battle of the Boyne (1690)</b> — William defeated James II in Ireland (still commemorated)"
+            ],
+            cultural: [
+              "<b>Bill of Rights (1689)</b> — alongside Magna Carta, foundation of British constitutional law"
+            ]
+          },
+          {
+            title: "Queen Anne", subtitle: "1702–1714", dots: 2,
+            items: [
+              "Last <b>Stuart monarch</b>",
+              "<b>Act of Union (1707)</b> — united England and Scotland into <b>Great Britain</b>",
+              "Created a single <b>Parliament of Great Britain</b> at Westminster",
+              "Scotland kept its own <b>legal and education systems</b>"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Georgian & Victorian": {
+    intro: "Empire, Industrial Revolution, abolition, and the longest-reigning queen (until Elizabeth II).",
+    sections: [
+      {
+        heading: "Georgian Era",
+        cards: [
+          {
+            title: "George I", subtitle: "1714–1727", dots: 1,
+            items: [
+              "First <b>Hanoverian king</b> — from Germany, spoke little English",
+              "Power shifted to <b>Prime Minister and Cabinet</b> because of language barrier",
+              "<b>Robert Walpole</b> became first <b>Prime Minister (1721–1742)</b>"
+            ]
+          },
+          {
+            title: "George II", subtitle: "1727–1760", dots: 1,
+            items: [
+              "Last British monarch to <b>lead troops in battle</b> (Dettingen, 1743)",
+              "<b>Jacobite Rebellion (1745)</b> — Bonnie Prince Charlie tried to reclaim throne; defeated at <b>Battle of Culloden (1746)</b>"
+            ]
+          },
+          {
+            title: "George III", subtitle: "1760–1820", dots: 2,
+            items: [
+              "Lost the <b>American colonies</b> — American Revolution (1776)",
+              "Reign included <b>Napoleonic Wars</b> — Britain fought France",
+              "<b>Battle of Trafalgar (1805)</b> — Admiral Nelson's victory (and death); established British naval supremacy",
+              "<b>Battle of Waterloo (1815)</b> — Duke of Wellington defeated Napoleon — ended Napoleonic Wars",
+              "Suffered from <b>mental illness</b> in later years",
+              "<b>Act of Union with Ireland (1800)</b> — created the <b>United Kingdom of Great Britain and Ireland</b>"
+            ],
+            cultural: [
+              "<b>Robert Burns</b> — Scottish national poet; wrote <i>Auld Lang Syne</i> and <i>A Red, Red Rose</i>",
+              "<b>William Wordsworth</b> — Romantic poet; <i>Daffodils</i>, <i>The Prelude</i>",
+              "<b>Jane Austen</b> — <i>Pride and Prejudice</i>, <i>Sense and Sensibility</i>; sharp social commentary"
+            ]
+          },
+          {
+            title: "George IV & William IV", subtitle: "1820–1837", dots: 1,
+            items: [
+              "George IV — known for extravagance (<b>Brighton Pavilion</b>)",
+              "William IV — <b>Reform Act 1832</b> passed during his reign (expanded voting rights)",
+              "Abolished <b>slavery in British Empire (1833)</b>"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Victorian Era",
+        cards: [
+          {
+            title: "Queen Victoria", subtitle: "1837–1901", dots: 3,
+            items: [
+              "Reigned <b>63 years</b> — longest until Elizabeth II",
+              "The <b>Victorian era</b> — period of massive expansion and change",
+              "<b>British Empire</b> became the largest in history — ruled ~quarter of the world",
+              "Period of <b>Industrial Revolution</b> — factories, railways, urbanisation",
+              "Became <b>Empress of India (1876)</b>",
+              "<b>Irish Potato Famine (1845–1852)</b> — ~1 million died, ~1 million emigrated",
+              "<b>Crimean War (1853–1856)</b> — Florence Nightingale reformed nursing",
+              "<b>Boer Wars</b> in South Africa (1880s–1902)"
+            ],
+            cultural: [
+              "<b>Charles Dickens</b> — <i>Oliver Twist, A Christmas Carol, Great Expectations, A Tale of Two Cities</i>; highlighted poverty and social injustice",
+              "<b>Brontë sisters</b> — Charlotte: <i>Jane Eyre</i>; Emily: <i>Wuthering Heights</i>; Anne: <i>The Tenant of Wildfell Hall</i>",
+              "<b>Thomas Hardy</b> — <i>Far from the Madding Crowd, Tess of the d'Urbervilles</i>",
+              "<b>Arthur Conan Doyle</b> — created <b>Sherlock Holmes</b>",
+              "<b>Robert Louis Stevenson</b> — <i>Treasure Island, Dr Jekyll and Mr Hyde</i>",
+              "<b>Rudyard Kipling</b> — <i>The Jungle Book</i>; first English-language Nobel Prize in Literature (1907)",
+              "<b>Pre-Raphaelite Brotherhood</b> — art movement (Millais, Rossetti, Hunt)",
+              "<b>Crystal Palace (1851)</b> — built for the Great Exhibition; showcased British industrial power"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Modern Monarchy": {
+    intro: "World Wars, welfare state, decolonisation, and the modern constitutional monarchy.",
+    sections: [
+      {
+        heading: "20th Century Monarchs",
+        cards: [
+          {
+            title: "Edward VII", subtitle: "1901–1910", dots: 1,
+            items: [
+              "Victoria's son — '<b>Edwardian era</b>'",
+              "Period of <b>social reform</b> and growing international tension",
+              "<b>Entente Cordiale (1904)</b> — alliance with France"
+            ]
+          },
+          {
+            title: "George V", subtitle: "1910–1936", dots: 2,
+            items: [
+              "Reigned during <b>World War I (1914–1918)</b>",
+              "Changed royal family name from <b>Saxe-Coburg-Gotha to Windsor (1917)</b> (anti-German sentiment)",
+              "<b>Irish independence</b> — Irish Free State created (1922); Northern Ireland remained in UK",
+              "First BBC <b>radio broadcast</b> of the King's Christmas message (1932)"
+            ],
+            cultural: [
+              "<b>War poets</b> — Wilfred Owen (<i>Dulce et Decorum Est</i>), Siegfried Sassoon — depicted horrors of WWI"
+            ]
+          },
+          {
+            title: "Edward VIII", subtitle: "Jan–Dec 1936", dots: 2,
+            items: [
+              "<b>Abdicated</b> to marry American divorcee <b>Wallis Simpson</b>",
+              "Only British monarch to <b>voluntarily abdicate</b>",
+              "Reigned less than <b>one year</b>"
+            ]
+          },
+          {
+            title: "George VI", subtitle: "1936–1952", dots: 2,
+            items: [
+              "Became king unexpectedly after Edward VIII's abdication",
+              "Reigned during <b>World War II (1939–1945)</b>",
+              "Became symbol of <b>national resilience</b> — stayed in London during the Blitz",
+              "<b>Welfare state</b> established during his reign (NHS, 1948)",
+              "India gained <b>independence (1947)</b> — beginning of <b>decolonisation</b>"
+            ]
+          },
+          {
+            title: "Elizabeth II", subtitle: "1952–2022", dots: 3,
+            items: [
+              "<b>Longest-reigning British monarch</b> — 70 years",
+              "Oversaw <b>decolonisation</b> and transformation of Empire into the <b>Commonwealth</b>",
+              "Head of the <b>Commonwealth of Nations</b> (54 countries)",
+              "Celebrated <b>Silver (1977), Golden (2002), Diamond (2012), Platinum (2022) Jubilees</b>",
+              "Died <b>8 September 2022</b> at Balmoral, Scotland"
+            ],
+            cultural: [
+              "<b>The Swinging Sixties</b> — cultural revolution in music, fashion, art",
+              "<b>The Beatles, The Rolling Stones</b> — British cultural export",
+              "Iconic British <b>film, TV, and popular culture</b> flourished"
+            ]
+          },
+          {
+            title: "Charles III", subtitle: "2022–present", dots: 2,
+            items: [
+              "Became king aged <b>73</b> — oldest person to accede to British throne",
+              "Coronation: <b>6 May 2023</b> at Westminster Abbey",
+              "Known for advocacy on <b>environment and climate change</b>",
+              "Head of the <b>Commonwealth</b>"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Social & Political Movements": {
+    intro: "Key reforms, movements, and figures that shaped modern British democracy and society.",
+    sections: [
+      {
+        heading: "Democracy & Rights",
+        cards: [
+          {
+            title: "Magna Carta (1215)", subtitle: "Foundation of rights", dots: 3,
+            items: [
+              "Signed by <b>King John</b> at Runnymede, forced by barons",
+              "Established: <b>rule of law</b> — no one is above the law",
+              "Right to <b>fair trial</b> — no imprisonment without legal process",
+              "Foundation of <b>constitutional governance</b> worldwide"
+            ]
+          },
+          {
+            title: "Bill of Rights (1689)", subtitle: "Parliamentary supremacy", dots: 3,
+            items: [
+              "After the <b>Glorious Revolution</b>",
+              "Established <b>Parliament's authority over the Crown</b>",
+              "Free elections, no cruel punishment, right to petition the monarch",
+              "No <b>taxation without Parliament's consent</b>",
+              "Foundation of <b>constitutional monarchy</b>"
+            ]
+          },
+          {
+            title: "The Reform Acts", subtitle: "1832, 1867, 1884", dots: 2,
+            items: [
+              "<b>1832 Reform Act</b> — increased number of men who could vote; reduced 'rotten boroughs'",
+              "<b>1867 Reform Act</b> — extended vote to working-class men in towns",
+              "<b>1884 Reform Act</b> — extended vote to most men in countryside",
+              "Gradual expansion of <b>democracy</b> over the 19th century"
+            ]
+          },
+          {
+            title: "The Chartists (1830s–1850s)", subtitle: "People's Charter", dots: 3,
+            items: [
+              "Working-class movement for <b>political reform</b>",
+              "<b>Six demands of the People's Charter:</b>",
+              "1. <b>Universal male suffrage</b> (vote for all men)",
+              "2. <b>Secret ballot</b> (vote in private)",
+              "3. <b>No property qualification</b> for MPs",
+              "4. <b>Payment for MPs</b> (so working men could serve)",
+              "5. <b>Equal-sized constituencies</b>",
+              "6. <b>Annual Parliamentary elections</b>",
+              "Movement declined but <b>5 of 6 demands eventually became law</b> (not annual elections)"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Abolition of Slavery",
+        cards: [
+          {
+            title: "Abolition Movement", subtitle: "1807–1833", dots: 3,
+            items: [
+              "<b>William Wilberforce</b> — MP who led the campaign in Parliament",
+              "<b>1807</b> — <b>slave trade abolished</b> in British Empire (trading, not ownership)",
+              "<b>1833</b> — <b>Emancipation Act</b> — slavery itself abolished throughout the Empire",
+              "<b>Quakers</b> and <b>Olaudah Equiano</b> (former enslaved person who wrote his autobiography) were key campaigners"
+            ],
+            cultural: [
+              "<b>Olaudah Equiano — <i>The Interesting Narrative</i> (1789)</b> — autobiography of a formerly enslaved man; major influence on abolition movement"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Women's Suffrage",
+        cards: [
+          {
+            title: "Suffragists & Suffragettes", subtitle: "1897–1928", dots: 3,
+            items: [
+              "<b>Suffragists (NUWSS)</b> — led by <b>Millicent Fawcett</b>; peaceful, constitutional campaigning",
+              "<b>Suffragettes (WSPU)</b> — led by <b>Emmeline Pankhurst</b> (founded 1903); militant direct action",
+              "Suffragettes used <b>hunger strikes, arson, chaining to railings, disrupting events</b>",
+              "<b>Emily Davison</b> — died after running in front of the King's horse at the Derby (1913)",
+              "<b>1918</b> — women over <b>30</b> who owned property gained the vote (+ all men over 21)",
+              "<b>1928</b> — <b>Equal Franchise Act</b> — all women over <b>21</b> could vote (equal with men)"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Workers' Rights & Trade Unions",
+        cards: [
+          {
+            title: "Trade Union Movement", subtitle: "19th–20th century", dots: 2,
+            items: [
+              "<b>Tolpuddle Martyrs (1834)</b> — six farm workers arrested for forming a union; became martyrs for workers' rights",
+              "Trade unions grew throughout the <b>Industrial Revolution</b>",
+              "<b>General Strike (1926)</b> — workers across industries struck over miners' pay",
+              "Trade unions led to formation of the <b>Labour Party</b>"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Welfare State & NHS",
+        cards: [
+          {
+            title: "The Welfare State", subtitle: "1940s", dots: 3,
+            items: [
+              "<b>Beveridge Report (1942)</b> — identified 'Five Giants': Want, Disease, Ignorance, Squalor, Idleness",
+              "After WWII, <b>Clement Attlee's Labour government</b> built the welfare state",
+              "<b>National Health Service (NHS) — 5 July 1948</b> — free healthcare for all at the point of use",
+              "Introduced <b>National Insurance</b> — social security system",
+              "<b>Free education</b> for all children",
+              "Council housing programme to address housing shortage"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Migration & Diversity",
+        cards: [
+          {
+            title: "Post-War Immigration", subtitle: "1948 onwards", dots: 2,
+            items: [
+              "<b>HMT Empire Windrush (1948)</b> — brought first large group of Caribbean migrants to Britain",
+              "<b>Windrush Generation</b> — invited to help rebuild post-war Britain",
+              "Commonwealth immigration from <b>India, Pakistan, Bangladesh, Africa, Caribbean</b>",
+              "<b>Race Relations Acts (1965, 1968, 1976)</b> — made racial discrimination illegal",
+              "<b>Equality Act 2010</b> — consolidated anti-discrimination law (race, gender, disability, age, religion, sexual orientation)"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Northern Ireland",
+        cards: [
+          {
+            title: "The Troubles & Peace Process", subtitle: "1960s–1998", dots: 2,
+            items: [
+              "Conflict between <b>unionists/loyalists</b> (Protestant, pro-UK) and <b>nationalists/republicans</b> (Catholic, pro-united Ireland)",
+              "<b>The Troubles</b> — decades of violence, bombings, over 3,000 killed",
+              "<b>Good Friday Agreement (Belfast Agreement) — 10 April 1998</b>",
+              "Established <b>power-sharing government</b> in Northern Ireland",
+              "People of Northern Ireland can identify as <b>British, Irish, or both</b>"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Political Structures & PMs": {
+    intro: "How the UK is governed, key Prime Ministers, devolution, and the Commonwealth.",
+    sections: [
+      {
+        heading: "UK Political Structure",
+        cards: [
+          {
+            title: "Parliament", subtitle: "The legislature", dots: 3,
+            items: [
+              "<b>Parliament = Monarch + House of Lords + House of Commons</b>",
+              "<b>House of Commons</b> — <b>650 elected MPs</b> (one per constituency); holds real power",
+              "<b>House of Lords</b> — ~<b>800 members</b> (appointed life peers, bishops, some hereditary); revises legislation; unelected",
+              "<b>Prime Minister</b> — leader of party with most seats in Commons",
+              "PM appoints the <b>Cabinet</b>",
+              "<b>Speaker of the House</b> — chairs Commons debates (politically neutral)",
+              "<b>Leader of the Opposition</b> — leads the second-largest party",
+              "General elections held at least every <b>5 years</b>",
+              "Voting system: <b>first past the post</b>"
+            ]
+          },
+          {
+            title: "Devolution", subtitle: "1997 onwards", dots: 3,
+            items: [
+              "<b>Scotland</b> — Scottish Parliament (Holyrood, Edinburgh); <b>129 MSPs</b>; can set income tax, education, health, law",
+              "<b>Wales</b> — Senedd (Welsh Parliament, Cardiff); <b>60 MSs</b>; health, education, some tax powers",
+              "<b>Northern Ireland</b> — Northern Ireland Assembly (Stormont, Belfast); <b>90 MLAs</b>; power-sharing",
+              "<b>England</b> — no separate parliament; governed by UK Parliament at Westminster",
+              "Some <b>English cities</b> have elected mayors with devolved powers (e.g., Greater Manchester, London)"
+            ]
+          },
+          {
+            title: "The Monarchy Today", subtitle: "Constitutional role", dots: 2,
+            items: [
+              "Monarch is <b>Head of State</b> — largely <b>ceremonial</b>",
+              "Opens Parliament, gives <b>Royal Assent</b> to laws",
+              "Meets the PM weekly",
+              "Represents the UK abroad and as Head of the <b>Commonwealth</b>",
+              "Politically <b>neutral</b> — does not interfere in politics"
+            ]
+          },
+          {
+            title: "The Commonwealth", subtitle: "Association of nations", dots: 2,
+            items: [
+              "<b>56 member countries</b> — mostly former British Empire",
+              "Members are <b>independent and equal</b>",
+              "King Charles III is Head of the Commonwealth",
+              "<b>Commonwealth Games</b> held every 4 years",
+              "Based on shared values of <b>democracy, human rights, rule of law</b>"
+            ]
+          },
+          {
+            title: "European Union & Brexit", subtitle: "1973–2020", dots: 2,
+            items: [
+              "UK joined the <b>EEC (European Economic Community) in 1973</b>",
+              "<b>Brexit referendum — 23 June 2016</b> — 52% voted to leave",
+              "UK officially left the EU on <b>31 January 2020</b>",
+              "Transition period ended <b>31 December 2020</b>"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Key Prime Ministers",
+        cards: [
+          {
+            title: "Robert Walpole", subtitle: "1721–1742 (Whig)", dots: 2,
+            items: [
+              "<b>First Prime Minister</b> — title wasn't official, but he's recognised as the first",
+              "Served under George I and George II"
+            ]
+          },
+          {
+            title: "William Pitt the Younger", subtitle: "1783–1801, 1804–1806 (Tory)", dots: 1,
+            items: [
+              "Became PM aged <b>24</b> — youngest ever",
+              "Led Britain during the <b>Napoleonic Wars</b>"
+            ]
+          },
+          {
+            title: "Benjamin Disraeli", subtitle: "1868, 1874–1880 (Conservative)", dots: 2,
+            items: [
+              "Expanded <b>British Empire</b> — bought Suez Canal shares",
+              "Made Victoria <b>Empress of India</b>",
+              "Passed social reforms — housing, public health",
+              "<b>Second Reform Act (1867)</b> — doubled electorate"
+            ]
+          },
+          {
+            title: "William Gladstone", subtitle: "1868–1894 (Liberal, 4 terms)", dots: 2,
+            items: [
+              "Great rival of Disraeli",
+              "Reformed <b>education</b> (1870 Education Act — elementary schools)",
+              "Campaigned for <b>Irish Home Rule</b> (unsuccessful)",
+              "Expanded <b>voting rights</b>"
+            ]
+          },
+          {
+            title: "David Lloyd George", subtitle: "1916–1922 (Liberal)", dots: 2,
+            items: [
+              "Led Britain to victory in <b>World War I</b>",
+              "Introduced the <b>People's Budget (1909)</b> — taxed the wealthy to fund welfare",
+              "Helped create the <b>old age pension</b> and <b>National Insurance</b>"
+            ]
+          },
+          {
+            title: "Winston Churchill", subtitle: "1940–1945, 1951–1955 (Conservative)", dots: 3,
+            items: [
+              "Led Britain through <b>World War II</b>",
+              "Famous speeches: '<b>We shall fight on the beaches</b>', '<b>Their finest hour</b>'",
+              "Voted <b>greatest Briton</b> in 2002 BBC poll",
+              "Won the <b>Nobel Prize in Literature (1953)</b>",
+              "Lost 1945 election to Attlee despite winning the war"
+            ]
+          },
+          {
+            title: "Clement Attlee", subtitle: "1945–1951 (Labour)", dots: 3,
+            items: [
+              "Built the <b>welfare state</b> — NHS, National Insurance, nationalisation",
+              "Implemented the <b>Beveridge Report</b>",
+              "Granted <b>independence to India (1947)</b>",
+              "Joined <b>NATO</b> and began the nuclear programme"
+            ]
+          },
+          {
+            title: "Margaret Thatcher", subtitle: "1979–1990 (Conservative)", dots: 3,
+            items: [
+              "First <b>female Prime Minister</b>",
+              "Known as the '<b>Iron Lady</b>'",
+              "<b>Falklands War (1982)</b> — recaptured Falkland Islands from Argentina",
+              "<b>Privatisation</b> of state industries (gas, telecoms, water, steel)",
+              "Reduced <b>trade union power</b> — miners' strike (1984–85)",
+              "Longest-serving PM of the 20th century (11 years)"
+            ]
+          },
+          {
+            title: "Tony Blair", subtitle: "1997–2007 (Labour)", dots: 2,
+            items: [
+              "Introduced <b>devolution</b> — Scottish Parliament, Welsh Assembly, London Mayor",
+              "<b>Good Friday Agreement (1998)</b> — Northern Ireland peace process",
+              "<b>Minimum wage</b> introduced",
+              "Controversial <b>Iraq War (2003)</b>"
+            ]
+          },
+          {
+            title: "Other Modern PMs to Know", subtitle: "Post-Blair", dots: 1,
+            items: [
+              "<b>Gordon Brown (2007–2010)</b> — Labour; financial crisis",
+              "<b>David Cameron (2010–2016)</b> — Conservative; austerity, Brexit referendum",
+              "<b>Theresa May (2016–2019)</b> — Conservative; Brexit negotiations",
+              "<b>Boris Johnson (2019–2022)</b> — Conservative; completed Brexit, COVID-19",
+              "<b>Rishi Sunak (2022–2024)</b> — Conservative; first British Asian PM",
+              "<b>Keir Starmer (2024–)</b> — Labour; current PM"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "Other Key Cultural Works to Know",
+        cards: [
+          {
+            title: "20th–21st Century Culture", subtitle: "Test-relevant highlights", dots: 2,
+            items: [],
+            cultural: [
+              "<b>Dylan Thomas</b> — Welsh poet; <i>Under Milk Wood</i>, <i>Do not go gentle into that good night</i>",
+              "<b>Wilfred Owen</b> — WWI poet; <i>Anthem for Doomed Youth</i>, <i>Dulce et Decorum Est</i>",
+              "<b>Graham Greene</b> — <i>The Third Man</i>, <i>Brighton Rock</i>",
+              "<b>George Orwell</b> — <i>Nineteen Eighty-Four</i>, <i>Animal Farm</i>",
+              "<b>J.K. Rowling</b> — <i>Harry Potter</i> series",
+              "<b>Ian Fleming</b> — created <b>James Bond</b>",
+              "<b>Sir Arthur Conan Doyle</b> — <b>Sherlock Holmes</b>",
+              "<b>Henry Moore & Barbara Hepworth</b> — iconic British sculptors",
+              "<b>David Hockney</b> — major contemporary British artist",
+              "<b>Francis Bacon</b> (20th c.) — influential modern painter",
+              "<b>The Proms</b> — annual classical music festival at the Royal Albert Hall",
+              "<b>Turner Prize</b> — contemporary art award",
+              "<b>Brit Awards</b> — annual British music awards",
+              "<b>National Trust & English Heritage</b> — preserve historic sites and countryside"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Royal Lineage": {
+    intro: "Simplified family tree showing how each monarch connects to the next. Scroll horizontally on wider trees.",
+    isTree: true,
+    sections: []
+  }
+};
+
+const TREE_DATA = [
+  {
+    title: "Normans (1066–1154)",
+    color: "#8B4513",
+    tree: {
+      name: "William I", dates: "1066–1087", tag: "The Conqueror",
+      children: [
+        { name: "William II", dates: "1087–1100", rel: "Son" },
+        { name: "Henry I", dates: "1100–1135", rel: "Son",
+          children: [
+            { name: "Stephen", dates: "1135–1154", rel: "Nephew", tag: "Disputed throne with Matilda (Henry I's daughter)" }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    title: "Plantagenets (1154–1377)",
+    color: "#B8860B",
+    tree: {
+      name: "Henry II", dates: "1154–1189", tag: "First Plantagenet (Matilda's son)",
+      children: [
+        { name: "Richard I", dates: "1189–1199", rel: "Son", tag: "Lionheart" },
+        { name: "John", dates: "1199–1216", rel: "Son", tag: "Magna Carta 1215",
+          children: [
+            { name: "Henry III", dates: "1216–1272", rel: "Son",
+              children: [
+                { name: "Edward I", dates: "1272–1307", rel: "Son", tag: "Conquered Wales",
+                  children: [
+                    { name: "Edward II", dates: "1307–1327", rel: "Son",
+                      children: [
+                        { name: "Edward III", dates: "1327–1377", rel: "Son", tag: "Hundred Years' War" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    title: "Lancaster & York — Wars of the Roses (1377–1485)",
+    color: "#722F37",
+    note: "Edward III's descendants split into two rival houses",
+    tree: {
+      name: "Edward III", dates: "1327–1377", tag: "Line splits after his death",
+      children: [
+        { name: "Richard II", dates: "1377–1399", rel: "Grandson", tag: "Deposed" },
+        { name: "Henry IV", dates: "1399–1413", rel: "Grandson", tag: "🔴 Lancaster",
+          children: [
+            { name: "Henry V", dates: "1413–1422", rel: "Son", tag: "Agincourt",
+              children: [
+                { name: "Henry VI", dates: "1422–1461", rel: "Son", tag: "Deposed by York" }
+              ]
+            }
+          ]
+        },
+        { name: "Edward IV", dates: "1461–1483", rel: "Great-great-grandson", tag: "⚪ York",
+          children: [
+            { name: "Edward V", dates: "1483", rel: "Son", tag: "Prince in the Tower" },
+            { name: "Richard III", dates: "1483–1485", rel: "Brother of Edw. IV", tag: "Died at Bosworth" }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    title: "Tudors (1485–1603)",
+    color: "#2E8B57",
+    tree: {
+      name: "Henry VII", dates: "1485–1509", tag: "Won Bosworth, united Lancaster & York",
+      children: [
+        { name: "Henry VIII", dates: "1509–1547", rel: "Son", tag: "Church of England, 6 wives",
+          children: [
+            { name: "Edward VI", dates: "1547–1553", rel: "Son (Jane Seymour)", tag: "Protestant, died age 15" },
+            { name: "Mary I", dates: "1553–1558", rel: "Daughter (Catherine of Aragon)", tag: "Bloody Mary" },
+            { name: "Elizabeth I", dates: "1558–1603", rel: "Daughter (Anne Boleyn)", tag: "Virgin Queen, Golden Age" }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    title: "Stuarts (1603–1714)",
+    color: "#4B0082",
+    note: "Includes the only period of English republic (1649–1660)",
+    tree: {
+      name: "James I", dates: "1603–1625", tag: "Cousin of Elizabeth I, King of Scotland",
+      children: [
+        { name: "Charles I", dates: "1625–1649", rel: "Son", tag: "Executed — Civil War",
+          children: [
+            { name: "Cromwell", dates: "1649–1658", rel: "Lord Protector", tag: "NOT A KING — Republic", special: true },
+            { name: "Charles II", dates: "1660–1685", rel: "Son", tag: "Restoration, no legitimate heir" },
+            { name: "James II", dates: "1685–1688", rel: "Son", tag: "Catholic, fled to France",
+              children: [
+                { name: "Mary II", dates: "1689–1694", rel: "Daughter", tag: "Co-ruled with William III" },
+                { name: "Anne", dates: "1702–1714", rel: "Daughter", tag: "Act of Union 1707" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    title: "Hanoverians (1714–1901)",
+    color: "#1e3a5f",
+    note: "Protestant succession from Germany after Anne died without heirs",
+    tree: {
+      name: "George I", dates: "1714–1727", tag: "From Hanover, spoke little English",
+      children: [
+        { name: "George II", dates: "1727–1760", rel: "Son", tag: "Culloden 1746",
+          children: [
+            { name: "George III", dates: "1760–1820", rel: "Grandson", tag: "Lost America, Napoleonic Wars",
+              children: [
+                { name: "George IV", dates: "1820–1830", rel: "Son" },
+                { name: "William IV", dates: "1830–1837", rel: "Son", tag: "Reform Act 1832" },
+                { name: "Victoria", dates: "1837–1901", rel: "Granddaughter (via Duke of Kent)", tag: "63-year reign, Empress of India" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    title: "Windsor (1901–present)",
+    color: "#1e3a5f",
+    note: "Name changed from Saxe-Coburg-Gotha in 1917",
+    tree: {
+      name: "Edward VII", dates: "1901–1910", tag: "Victoria's son",
+      children: [
+        { name: "George V", dates: "1910–1936", rel: "Son", tag: "WWI, changed name to Windsor",
+          children: [
+            { name: "Edward VIII", dates: "1936", rel: "Son", tag: "Abdicated for Wallis Simpson" },
+            { name: "George VI", dates: "1936–1952", rel: "Son", tag: "WWII, welfare state",
+              children: [
+                { name: "Elizabeth II", dates: "1952–2022", rel: "Daughter", tag: "Longest reign — 70 years",
+                  children: [
+                    { name: "Charles III", dates: "2022–present", rel: "Son", tag: "Current monarch" }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+];
+
+const TABS = Object.keys(DATA);
+
+const TAB_ICONS = {
+  "Pre-Norman Britain": "🪨",
+  "Anglo-Saxon & Norman": "⚔️",
+  "Medieval": "🏰",
+  "Tudors": "👑",
+  "Stuarts": "⚖️",
+  "Georgian & Victorian": "🏭",
+  "Modern Monarchy": "🌍",
+  "Social & Political Movements": "✊",
+  "Political Structures & PMs": "🏛️",
+  "Royal Lineage": "🌳"
+};
+
+const MonarchBox = ({ node, dynastyColor }) => (
+  <div style={{
+    background: node.special ? "#fff8e7" : "#fff",
+    border: `2px solid ${node.special ? "#d4a017" : (dynastyColor || NAVY)}`,
+    borderRadius: "8px", padding: "10px 12px",
+    minWidth: "130px", maxWidth: "175px",
+    textAlign: "center", borderStyle: node.special ? "dashed" : "solid"
+  }}>
+    {node.rel && (
+      <div style={{ fontSize: "11px", color: "#999", fontStyle: "italic", marginBottom: "2px" }}>{node.rel}</div>
+    )}
+    <div style={{ fontSize: "15px", fontWeight: 700, color: node.special ? "#d4a017" : NAVY, lineHeight: 1.2 }}>{node.name}</div>
+    <div style={{ fontSize: "12.5px", color: "#666", marginTop: "2px" }}>{node.dates}</div>
+    {node.tag && (
+      <div style={{
+        fontSize: "11px", color: node.special ? "#b8860b" : (dynastyColor || NAVY),
+        fontWeight: 600, marginTop: "4px", lineHeight: 1.3
+      }}>{node.tag}</div>
+    )}
+  </div>
+);
+
+const TreeBranch = ({ node, dynastyColor }) => {
+  const hasChildren = node.children && node.children.length > 0;
+  const singleChild = hasChildren && node.children.length === 1;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <MonarchBox node={node} dynastyColor={dynastyColor} />
+      {hasChildren && (
+        <React.Fragment>
+          <div style={{ width: "2px", height: "18px", background: dynastyColor || NAVY }} />
+          {singleChild ? (
+            <TreeBranch node={node.children[0]} dynastyColor={dynastyColor} />
+          ) : (
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              {node.children.map((child, i) => {
+                const isFirst = i === 0;
+                const isLast = i === node.children.length - 1;
+                return (
+                  <div key={i} style={{
+                    display: "flex", flexDirection: "column", alignItems: "center",
+                    position: "relative", padding: "0 6px"
+                  }}>
+                    <div style={{
+                      position: "absolute", top: 0, height: "2px",
+                      background: dynastyColor || NAVY,
+                      left: isFirst ? "50%" : 0,
+                      right: isLast ? "50%" : 0
+                    }} />
+                    <div style={{ width: "2px", height: "18px", background: dynastyColor || NAVY }} />
+                    <TreeBranch node={child} dynastyColor={dynastyColor} />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </React.Fragment>
+      )}
+    </div>
+  );
+};
+
+const DynastyTree = ({ dynasty }) => (
+  <div style={{ marginBottom: "32px" }}>
+    <div style={{
+      fontSize: "15px", fontWeight: 700, color: dynasty.color || NAVY,
+      textTransform: "uppercase", letterSpacing: "1.5px",
+      padding: "20px 0 10px", borderBottom: `2px solid ${dynasty.color || NAVY}`, marginBottom: "6px"
+    }}>{dynasty.title}</div>
+    {dynasty.note && (
+      <div style={{ fontSize: "13px", color: "#888", fontStyle: "italic", marginBottom: "14px" }}>{dynasty.note}</div>
+    )}
+    <div style={{ overflowX: "auto", padding: "14px 0 10px", WebkitOverflowScrolling: "touch" }}>
+      <div style={{ display: "inline-flex", justifyContent: "center", minWidth: "100%" }}>
+        <TreeBranch node={dynasty.tree} dynastyColor={dynasty.color} />
+      </div>
+    </div>
+  </div>
+);
+
+function App() {
+  const [activeTab, setActiveTab] = useState(TABS[0]);
+  const [openCards, setOpenCards] = useState({});
+  const [expandAll, setExpandAll] = useState(false);
+
+  const toggleCard = (key) => {
+    setOpenCards(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleExpandAll = () => {
+    const tabData = DATA[activeTab];
+    const newState = {};
+    tabData.sections.forEach((section, si) => {
+      section.cards.forEach((_, ci) => {
+        newState[`${activeTab}-${si}-${ci}`] = !expandAll;
+      });
+    });
+    setOpenCards(prev => ({ ...prev, ...newState }));
+    setExpandAll(!expandAll);
+  };
+
+  const tabData = DATA[activeTab];
+
+  return (
+    <div style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", background: CREAM, minHeight: "100vh" }}>
+      {/* Tab Navigation */}
+      <div style={{
+        display: "flex", overflowX: "auto", background: "#fff",
+        borderBottom: `2px solid ${NAVY_PALE}`, padding: "0 8px",
+        WebkitOverflowScrolling: "touch", scrollbarWidth: "none",
+        position: "sticky", top: 0, zIndex: 10
+      }}>
+        {TABS.map(tab => (
+          <button key={tab} onClick={() => { setActiveTab(tab); setExpandAll(false); }} style={{
+            padding: "12px 14px", border: "none", background: "none",
+            cursor: "pointer", whiteSpace: "nowrap", fontSize: "12px",
+            fontWeight: activeTab === tab ? 700 : 500,
+            color: activeTab === tab ? NAVY : "#888",
+            borderBottom: activeTab === tab ? `3px solid ${NAVY}` : "3px solid transparent",
+            transition: "all 0.2s"
+          }}>
+            <span style={{ marginRight: "4px" }}>{TAB_ICONS[tab]}</span>
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Content */}
+      <div style={{ maxWidth: "720px", margin: "0 auto", padding: "20px 16px 60px" }}>
+        {/* Intro + Controls */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+          <p style={{ margin: 0, fontSize: "13.5px", color: "#666", flex: 1, lineHeight: 1.5 }}>{tabData.intro}</p>
+          {!tabData.isTree && (
+            <button onClick={handleExpandAll} style={{
+              marginLeft: "12px", padding: "6px 14px", fontSize: "11px",
+              border: `1px solid ${NAVY}`, borderRadius: "6px", background: "transparent",
+              color: NAVY, cursor: "pointer", fontWeight: 600, whiteSpace: "nowrap"
+            }}>
+              {expandAll ? "Collapse All" : "Expand All"}
+            </button>
+          )}
+        </div>
+
+        {/* Sections */}
+        {tabData.isTree ? (
+          TREE_DATA.map((dynasty, i) => (
+            <DynastyTree key={i} dynasty={dynasty} />
+          ))
+        ) : (
+          tabData.sections.map((section, si) => (
+            <div key={si}>
+              <SectionHeader>{section.heading}</SectionHeader>
+              {section.cards.map((card, ci) => {
+                const key = `${activeTab}-${si}-${ci}`;
+                return (
+                  <Card
+                    key={key}
+                    title={card.title}
+                    subtitle={card.subtitle}
+                    dots={card.dots}
+                    items={card.items}
+                    cultural={card.cultural}
+                    isOpen={!!openCards[key]}
+                    onToggle={() => toggleCard(key)}
+                  />
+                );
+              })}
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Footer */}
+      <div style={{
+        textAlign: "center", padding: "20px", fontSize: "11px",
+        color: "#aaa", borderTop: `1px solid ${NAVY_PALE}`
+      }}>
+        Life in the UK Test — Study Reference Guide
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
+</script>
+</body>
+</html>
