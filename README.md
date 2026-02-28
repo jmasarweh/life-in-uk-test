@@ -5,7 +5,7 @@ In the study.hmtl, the 3 dots indicate the occurence of this section/topic/fact 
 ## **Study Dots Legend**
 - 3 full dots = high occurence . . .
 - 2 full dots = medium occurence . . o
-- 1 full dot = low occurence o o o
+- 1 full dot = low occurence . o o
 
 ## **How to Download**
 Click on the html files above, then click on _Download_ File (right side menu). Open with Chrome/Edge/Firefox. Safari may not let you open them, but you can try.
