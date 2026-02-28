@@ -1,5 +1,5 @@
 # Life in UK Test Prep
-Some study digests and Practice Exams that helped me pass the Life in UK Test (2026). [ See screenshots below](#screenshots).
+Some Study Digests and Practice Exams that helped me pass the Life in UK Test (2026). [ See screenshots below](#screenshots).
 
 ## **Study Dots Legend**
 In the study.hmtl, the 3 dots indicate the occurence of this section/topic/fact in the actual exam. 
